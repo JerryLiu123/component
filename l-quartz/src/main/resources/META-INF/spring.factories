@@ -1,0 +1,5 @@
+#配置自定义Starter的自动化配置
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.lgh.quartz.config.JDBCConfig,\
+com.lgh.quartz.util.SpringUtil,\
+com.lgh.quartz.config.QuartzConfig
