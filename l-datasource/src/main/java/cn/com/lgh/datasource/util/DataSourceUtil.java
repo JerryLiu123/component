@@ -21,7 +21,9 @@ public class DataSourceUtil {
 		case "sqlserver":
 			className = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 			break;
-
+		case "nanda":
+			className = "";
+			break;
 		default:
 			throw new DataSourceException("请指定数据源类型");
 		}
@@ -43,7 +45,9 @@ public class DataSourceUtil {
 		case "sqlserver":
 			url = String.format("jdbc:sqlserver://%s:%s;DatabaseName=%s", ip, port, database);
 			break;
-
+		case "nanda":
+			url = String.format("", ip, port, database);
+			break;
 		default:
 			throw new DataSourceException("请指定数据源类型");
 		}

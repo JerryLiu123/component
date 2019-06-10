@@ -1,6 +1,6 @@
 package cn.com.lgh.dataformat.bean;
 
-public class ExcelBasisBean extends BaseBean{
+public class ExcelBasisBean extends BaseBean {
 
 	private String fileName;//文件名 带后缀名的啊 xls或xlsx
 	private String title;//标题
@@ -14,7 +14,7 @@ public class ExcelBasisBean extends BaseBean{
 		setFileName(System.currentTimeMillis()+".xlsx");
 		setTitle(null);
 		setSheetName("sheet1");
-		setIsCreateHeader(0);
+		setIsCreateHeader(1);
 		setIsAddIndex(0);
 	}
 	public String getFileName() {

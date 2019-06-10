@@ -54,7 +54,9 @@ public class NoXaDataSourceConfig {
 			dataSource = this.getDruidDataSource(entry.getKey(), entry.getValue());
 			if(dataSource != null) {
 				map.put(entry.getKey(), dataSource);
-				defaultDataSource = dataSource;
+				if(defaultDataSource != null) {
+					defaultDataSource = dataSource;
+				}
 			}
 		}
 		

@@ -32,4 +32,8 @@
 14. jwt.intercept.webmatcher：不需要拦截的静态地址List(/**/*.css, /**/*.js, /**/*.png, /**/*.gif)
 15. jwt.ssl.is：是否使用https(false)
 16. jwt.ssl.matcher：https强制拦截的地址List(/api/v1/login, /api/v1/sign)
+# 可实现接口
+1. TokenOperation：实现后注入到spring，可实现自己的token管理器
+2. WrongPasswordPost：实现后注入到spring，可实现自己的密码错误次数管理
+3. FilterInvocationSecurityMetadataSource：实现后注入到spring，可实现根据 请求地址获得该地址所需要的权限
  
