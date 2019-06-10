@@ -1,11 +1,11 @@
-#使用方法
+# 使用方法
 1. 引入jar包
 2. 根据所给的sql文件初始化数据库
 3. 配置数据源
 3. 自定义配置（详细配置项见下方）
 4. 继承接口IRunJob，编写自己的定时方法，并注入到spring中
 5. 调用接口/api/v1/job/add 添加定时任务
-#配置参数(括号中为默认值)
+# 配置参数(括号中为默认值)
 1. quartz.shread.instanceName：调度器实例名称(DefaultQuartzScheduler)
 2. quartz.shread.instanceid：调度器ID(AUTO)
 3. quartz.shread.rmi.export：rmi(false)
