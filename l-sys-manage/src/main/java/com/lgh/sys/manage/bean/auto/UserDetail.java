@@ -40,6 +40,15 @@ public class UserDetail extends User {
 		this.id = id;
 		this.lastTokenDate = lastTokenDate;
 	}
+	
+	public UserDetail(String id, String username, String password, boolean enabled, boolean accountNonExpired,
+			boolean credentialsNonExpired, boolean accountNonLocked,
+			Collection<? extends GrantedAuthority> authorities, 
+			Date lastTokenDate) {
+		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+		this.id = id;
+		this.lastTokenDate = lastTokenDate;
+	}
 
 	private String id;
 

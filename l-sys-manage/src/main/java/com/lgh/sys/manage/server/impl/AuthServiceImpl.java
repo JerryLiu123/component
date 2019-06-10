@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -114,14 +116,20 @@ public class AuthServiceImpl implements AuthService {
         try {
             //该方法会去调用userDetailsService.loadUserByUsername()去验证用户名和密码，如果正确，则存储该用户名密码到“security 的 context中”
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getName(), user.getPassword()));
-        } catch (DisabledException | UsernameNotFoundException | BadCredentialsException e) {
+        } catch (DisabledException | UsernameNotFoundException | BadCredentialsException | LockedException | CredentialsExpiredException e) {
         	if(e instanceof BadCredentialsException) {
         		//密码错误次数加一
         		wrongPasswordPost.add(user);
         		throw new CustomException("用户名密码错误");
         	}
         	if(e instanceof UsernameNotFoundException) {
-        		throw new CustomException("用户未找到");
+        		throw new CustomException(e.getMessage());
+        	}
+        	if(e instanceof LockedException) {
+        		throw new LockedException("用户被锁定，请联系管理员解锁");
+        	}
+        	if(e instanceof CredentialsExpiredException) {
+        		throw new CredentialsExpiredException("您的密码由于长时间未修改，请求改密码");
         	}
             throw new CustomException(e.getMessage());
         }

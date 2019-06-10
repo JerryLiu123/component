@@ -22,6 +22,8 @@ public class Userinfo {
     private Date updateTime;
 
     private String updaterId;
+    
+    private Date updatePwdTime;
 
     /**
      * @return id
@@ -162,4 +164,14 @@ public class Userinfo {
     public void setUpdaterId(String updaterId) {
         this.updaterId = updaterId == null ? null : updaterId.trim();
     }
+
+	public Date getUpdatePwdTime() {
+		return updatePwdTime;
+	}
+
+	public void setUpdatePwdTime(Date updatePwdTime) {
+		this.updatePwdTime = updatePwdTime;
+	}
+    
+    
 }

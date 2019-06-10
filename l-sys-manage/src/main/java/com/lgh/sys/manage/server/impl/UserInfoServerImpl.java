@@ -1,5 +1,9 @@
 package com.lgh.sys.manage.server.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.lgh.sys.manage.config.SysConstant;
 import com.lgh.sys.manage.model.Userinfo;
 import com.lgh.sys.manage.server.UserInfoServer;
 
@@ -19,12 +24,15 @@ public class UserInfoServerImpl implements UserInfoServer {
 	
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
+    
+	@Autowired
+	private SysConstant sysConstant;
 
 	@Transactional
 	@Override
 	public Userinfo selectByLoginName(String userName) {
-		String sql = "SELECT id, create_time, creator_id, error_num, login_name, `password`, remark, state, update_time, updater_id "
-				+ "FROM userinfo WHERE state='1' AND login_name = :name";
+		String sql = "SELECT id, create_time, creator_id, error_num, login_name, `password`, remark, state, update_time, updater_id, update_pwd_time "
+				+ "FROM userinfo WHERE login_name = :name";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", userName);
 		try {
@@ -42,6 +50,24 @@ public class UserInfoServerImpl implements UserInfoServer {
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("id", userID);
         jdbcTemplate.update(sqlUp, parameters);
+		return true;
+	}
+
+	@Override
+	public boolean checkUpdatePwd(Userinfo info) {
+		if(sysConstant.isUpdatePassword()) {
+			if(info == null || info.getUpdatePwdTime() == null) {
+				return false;
+			}
+			//获得时间
+			long day = sysConstant.getUpdatePasswordDay();
+			LocalDate to = LocalDate.now();
+			LocalDate from = LocalDateTime.ofInstant(info.getUpdatePwdTime().toInstant(), ZoneId.systemDefault()).toLocalDate();
+			int days = (int) ChronoUnit.DAYS.between(from, to);
+			if(days >= day) {
+				return false;
+			}
+		}
 		return true;
 	}
 

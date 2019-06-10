@@ -25,4 +25,15 @@ public interface UserInfoServer {
 	 * @return
 	 */
 	public boolean lockUser(String userID);
+	
+	/**
+	 * 
+	 * @Title: checkUpdatePwd
+	 * @Description: 校验密码更新时间
+	 * @Author lizhiting
+	 * @DateTime Jun 10, 2019 1:58:12 PM
+	 * @param info
+	 * @return
+	 */
+	public boolean checkUpdatePwd(Userinfo info);
 }
