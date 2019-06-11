@@ -22,9 +22,9 @@ public class RoleServerImpl implements RoleServer {
 		String sql = "		SELECT " + 
 				"			r.role_name " + 
 				"		FROM " + 
-				"			menuinfo m " + 
-				"			LEFT JOIN role_menu rm ON m.menu_id = rm.menu_id " + 
-				"			LEFT JOIN role r ON r.role_id = rm.role_id " + 
+				"			sys_menu_info m " + 
+				"			LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id " + 
+				"			LEFT JOIN sys_role_info r ON r.role_id = rm.role_id " + 
 				"		WHERE m.request_url = :uri";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("uri", uri);
@@ -37,10 +37,10 @@ public class RoleServerImpl implements RoleServer {
 				"			r.role_id, " + 
 				"			r.role_name " + 
 				"		FROM " + 
-				"			role r " + 
-				"			JOIN role_user ru ON ru.role_id = r.role_id  " + 
+				"			sys_role_info r " + 
+				"			JOIN sys_role_login ru ON ru.role_id = r.role_id  " + 
 				"		WHERE " + 
-				"			ru.user_id = :userId";
+				"			ru.login_id = :userId";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("userId", userId);
 		return jdbcTemplate.query(sqlRole, parameters, new BeanPropertyRowMapper<Role>(Role.class));

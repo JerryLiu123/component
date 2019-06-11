@@ -34,7 +34,7 @@ public class JwtUtils {
 	private Logger LOG = LoggerFactory.getLogger(JwtUtils.class);
     public static final String ROLE_REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
 
-    private static final String CLAIM_KEY_USER_ID = "user_id";
+    private static final String CLAIM_KEY_USER_ID = "login_id";
     private static final String CLAIM_KEY_AUTHORITIES = "scope";
     
     @Autowired

@@ -6,7 +6,7 @@ public class RoleUser {
 
     private String roleId;
 
-    private String userId;
+    private String loginId;
 
     /**
      * @return id
@@ -36,17 +36,12 @@ public class RoleUser {
         this.roleId = roleId == null ? null : roleId.trim();
     }
 
-    /**
-     * @return user_id
-     */
-    public String getUserId() {
-        return userId;
-    }
+	public String getLoginId() {
+		return loginId;
+	}
 
-    /**
-     * @param userId
-     */
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
-    }
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
 }

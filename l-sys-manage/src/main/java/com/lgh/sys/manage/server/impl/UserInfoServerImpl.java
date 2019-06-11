@@ -32,7 +32,7 @@ public class UserInfoServerImpl implements UserInfoServer {
 	@Override
 	public Userinfo selectByLoginName(String userName) {
 		String sql = "SELECT id, create_time, creator_id, error_num, login_name, `password`, remark, state, update_time, updater_id, update_pwd_time "
-				+ "FROM userinfo WHERE login_name = :name";
+				+ "FROM sys_login_info WHERE login_name = :name";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("name", userName);
 		try {
@@ -46,7 +46,7 @@ public class UserInfoServerImpl implements UserInfoServer {
 	@Transactional
 	@Override
 	public boolean lockUser(String userID) {
-        String sqlUp = "UPDATE userinfo SET state = '2' WHERE `id` = :id";
+        String sqlUp = "UPDATE sys_login_info SET state = '2' WHERE `id` = :id";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("id", userID);
         jdbcTemplate.update(sqlUp, parameters);
