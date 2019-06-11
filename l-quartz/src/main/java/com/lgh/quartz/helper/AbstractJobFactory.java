@@ -29,7 +29,7 @@ public abstract class AbstractJobFactory implements Job  {
 			String status = "1";
 			String message = null;
 			try {
-				job.run();
+				job.run(context);
 				message = "ID:"+scheduleJob.getJobId()+"任务执行成功";
 			} catch (Exception e) {
 				log.error("定时任务执行失败！！", e);

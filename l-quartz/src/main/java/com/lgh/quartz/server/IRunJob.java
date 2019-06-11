@@ -1,5 +1,7 @@
 package com.lgh.quartz.server;
 
+import org.quartz.JobExecutionContext;
+
 /**
  * 
  * @ClassName: IRunJob
@@ -15,5 +17,5 @@ public interface IRunJob {
 	 * @Author lizhiting
 	 * @DateTime Jun 3, 2019 11:32:51 AM
 	 */
-	public void run();
+	public void run(JobExecutionContext context);
 }
