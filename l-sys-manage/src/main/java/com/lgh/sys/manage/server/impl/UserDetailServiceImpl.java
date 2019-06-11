@@ -10,8 +10,6 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.lgh.sys.manage.bean.auto.Role;
 import com.lgh.sys.manage.bean.auto.UserDetail;
-import com.lgh.sys.manage.config.SysConstant;
 import com.lgh.sys.manage.model.Userinfo;
 import com.lgh.sys.manage.server.RoleServer;
 import com.lgh.sys.manage.server.UserInfoServer;
@@ -28,10 +25,6 @@ import com.lgh.sys.manage.server.UserInfoServer;
 public class UserDetailServiceImpl implements UserDetailsService {
 	
 	private static Logger LOG = LoggerFactory.getLogger(UserDetailServiceImpl.class);
-	
-
-//	@Autowired
-//	private JdbcTemplate jdbcTemplate;
 	
 	@Autowired
 	private UserInfoServer userInfoServer;
@@ -47,33 +40,39 @@ public class UserDetailServiceImpl implements UserDetailsService {
 		if(null == info) {
 			throw new UsernameNotFoundException(username+"用户未找到");
 		}
-		//是否锁定
+		//false:锁定,true:正常
 		boolean accountNonLocked = false;
+		//false:停用,true:启用
+		boolean enabled = false;
 		switch (info.getState()) {
 		case "1"://正常
+			enabled = true;
 			accountNonLocked = true;
 			break;
 		case "2"://用户锁定
+			enabled = true;
 			accountNonLocked = false;
 			break;
 		case "-1"://用户删除
 			throw new UsernameNotFoundException(username+"用户未找到");
+		case "-2"://用户停用
+			enabled = false;
+			accountNonLocked = true;
+			break;
 		default:
 			throw new UsernameNotFoundException(username+"用户未找到");
 		}
 		
-		//校验密码更新时间
+		//true：密码更新时间间隔正常，false：密码过期
 		boolean credentialsNonExpired = userInfoServer.checkUpdatePwd(info);
-//		if(!userInfoServer.checkUpdatePwd(info)) {
-//			//throw new UsernameNotFoundException("您的密码由于长时间未修改，请求改密码");
-//		}
 		
 		Set<Role> authorities = new HashSet<>();
+		//获得角色
 		List<com.lgh.sys.manage.model.Role> roles = roleServer.selectRoleByUserId(info.getId());
 		roles.stream().forEach(obj -> {
 			authorities.add(new Role(obj.getRoleId(), obj.getRoleName()));
 		});
-		UserDetail user = new UserDetail(info.getId(), username, info.getPassword(), true, true, credentialsNonExpired, accountNonLocked, authorities, new Date());
+		UserDetail user = new UserDetail(info.getId(), username, info.getPassword(), enabled, true, credentialsNonExpired, accountNonLocked, authorities, new Date());
 		return user;
 	}
 	

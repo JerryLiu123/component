@@ -29,7 +29,7 @@ CREATE TABLE `sys_login_info` (
   `login_name` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `remark` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL COMMENT '1:正常，2:密码错误后锁定，-1:用户删除，-2:用户停用',
   `update_time` datetime DEFAULT NULL,
   `updater_id` varchar(255) DEFAULT NULL,
   `update_pwd_time` datetime DEFAULT NULL,
