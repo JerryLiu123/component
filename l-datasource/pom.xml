@@ -11,10 +11,10 @@
 	<description>lgh datasource Spring Boot</description>
 
 	<parent>
-		<groupId>cn.com.lgh.bon</groupId>
-		<artifactId>l-bom</artifactId>
+		<groupId>l-pom</groupId>
+		<artifactId>l-pom-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../l-bom</relativePath>
+		<relativePath>../l-pom-parent</relativePath>
 	</parent>
 
 	<properties>

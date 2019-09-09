@@ -18,6 +18,11 @@ public class IPAddrRequestOriginParser implements RequestOriginParser {
 	public String parseOrigin(HttpServletRequest request) {
 		// TODO Auto-generated method stub
 		// 这里只是简单的获得请求的IP
+		try {
+
+		}finally {
+
+		}
 		return request.getRemoteAddr();
 	}
 

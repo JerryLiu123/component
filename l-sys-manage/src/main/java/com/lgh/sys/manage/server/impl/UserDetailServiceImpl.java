@@ -63,7 +63,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 			throw new UsernameNotFoundException(username+"用户未找到");
 		}
 		
-		//true：密码更新时间间隔正常，false：密码过期
+		//true：密码正常，false：密码过期
 		boolean credentialsNonExpired = userInfoServer.checkUpdatePwd(info);
 		
 		Set<Role> authorities = new HashSet<>();

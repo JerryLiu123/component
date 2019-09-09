@@ -7,6 +7,13 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
+/**
+ * 
+ * @ClassName: ICacheOperation
+ * @Description: 缓存基本操作接口
+ * @Author lizhiting
+ * @DateTime Jun 11, 2019 5:49:03 PM
+ */
 public interface ICacheOperation {
 	/**
 	 * 设置新的值，并将原来的值返回

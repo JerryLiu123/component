@@ -31,6 +31,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param liveTime 超时时间
 	 * @return
 	 */
+	@Override
 	public Object getSet(String key, String value, long liveTime) {
 		Object a = redisTemplate.opsForValue().getAndSet(key, value);
 		if(liveTime > 0) {
@@ -44,6 +45,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param keys
 	 * @throws Exception
 	 */
+	@Override
 	public void delForValue(String... keys) {
 		Set<String> set = new HashSet<String>();
 		for(String key : keys) {
@@ -59,6 +61,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param liveTime 超时时间
 	 * @throws Exception
 	 */
+	@Override
 	public void set(String key, Object value, long liveTime) throws Exception {
 		if(liveTime > 0) {
 			redisTemplate.opsForValue().set(key, value, liveTime, TimeUnit.SECONDS);
@@ -73,6 +76,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param timeout
 	 * @return
 	 */
+	@Override
 	public boolean resetExpireTime(String key, long timeout) {
 		return redisTemplate.boundValueOps(key).expire(timeout, TimeUnit.SECONDS); 
 	}
@@ -84,6 +88,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param offset
 	 * @throws Exception
 	 */
+	@Override
 	public void setByOffset(String key, Object value, long offset) throws Exception {
 		if(offset > 0) {
 			redisTemplate.opsForValue().set(key, value, offset);
@@ -99,6 +104,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public Boolean setValueForExist(String key, String value) {
 		return redisTemplate.opsForValue().setIfAbsent(key, value);
 	}
@@ -108,6 +114,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @param value
 	 */
+	@Override
 	public void set(String key, Object value) {
 		redisTemplate.opsForValue().set(key, value);
 	}
@@ -117,6 +124,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Object get(String key) {
 		return redisTemplate.opsForValue().get(key);
 	}
@@ -126,6 +134,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Object dequeue(String key) {
 		return redisTemplate.boundListOps(key).leftPop();
 	}
@@ -135,6 +144,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public Long enqueue(String key, Object... value) {
 		return redisTemplate.boundListOps(key).rightPushAll(value);
 	}
@@ -144,6 +154,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Long getQueueSize(String key) {
 		return redisTemplate.boundListOps(key).size();
 	}
@@ -155,6 +166,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param score 分数
 	 * @return
 	 */
+	@Override
 	public boolean setZSet(String key, String value, Long score) {
 		return redisTemplate.boundZSetOps(key).add(value, score);
 	}
@@ -165,6 +177,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public Double getZSetScore(String key, String value) {
 		return redisTemplate.boundZSetOps(key).score(value);
 	}
@@ -176,6 +189,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param increment
 	 * @return
 	 */
+	@Override
 	public Double incrementZSetScore(String key, String value, Long increment) {
 		return redisTemplate.boundZSetOps(key).incrementScore(value, increment);
 	}
@@ -186,6 +200,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param value
 	 * @return
 	 */
+	@Override
 	public Cursor<TypedTuple<Object>> getZSetByValue(String key, String value){
 		return redisTemplate.boundZSetOps(key).scan(ScanOptions.scanOptions().match(value).build());
 	}
@@ -195,6 +210,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Cursor<TypedTuple<Object>> getZSetAll(String key) {
 		return redisTemplate.boundZSetOps(key).scan(ScanOptions.NONE); 
 	}
@@ -206,6 +222,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param end
 	 * @return
 	 */
+	@Override
 	public Set<Object> getZSetByRange(String key, long start, long end) {
 		return redisTemplate.boundZSetOps(key).range(start, end);
 	}
@@ -215,6 +232,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Set<Object> getZSetAllValue(String key) {
 		return redisTemplate.boundZSetOps(key).range(0, -1);
 	}
@@ -226,6 +244,7 @@ public class RedisOperation implements ICacheOperation {
 	 * @param max
 	 * @return
 	 */
+	@Override
 	public Long countZSetByRange(String key, double min, double max) {
 		return redisTemplate.boundZSetOps(key).count(min, max);
 	}
@@ -235,31 +254,40 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public Long countZSet(String key) {
 		return redisTemplate.boundZSetOps(key).zCard();
 	}
-	
-	
+
+
+	@Override
 	public void setHashOps(String key, Object value) {
 		this.setHashOps("hashops", key, value);
 	}
-	
+
+	@Override
 	public void setHashOps(String mapName, String key, Object value) {
 		redisTemplate.boundHashOps(mapName).put(key, value);
 	}
-	
+
+	@Override
 	public void setHashOps(String mapName, Map<Object, Object> values) {
 		redisTemplate.boundHashOps(mapName).putAll(values);
 	}
-	
+
+	@Override
 	public Object getZHashOps(String key) {
 		return this.getZHashOps("hashops", key);
 	}
-	
+
+
+	@Override
 	public Object getZHashOps(String mapName, String key) {
 		return redisTemplate.boundHashOps(mapName).get(key);
 	}
 
+
+	@Override
 	public Object getkeys(String pattern) {
 		 return redisTemplate.keys(pattern);
 	}
@@ -269,10 +297,13 @@ public class RedisOperation implements ICacheOperation {
 	 * @param key
 	 * @return
 	 */
+	@Override
 	public boolean exists(final String key) {
 		return redisTemplate.hasKey(key);
 	}
 
+
+	@Override
 	public String flushDB() {
         return redisTemplate.execute(new RedisCallback<String>() {
             public String doInRedis(RedisConnection connection) throws DataAccessException {
@@ -282,6 +313,7 @@ public class RedisOperation implements ICacheOperation {
         });
 	}
 
+	@Override
 	public long dbSize() {
         return redisTemplate.execute(new RedisCallback<Long>() {
             public Long doInRedis(RedisConnection connection) throws DataAccessException {
@@ -290,6 +322,7 @@ public class RedisOperation implements ICacheOperation {
         });
 	}
 
+	@Override
 	public String ping() {
         return redisTemplate.execute(new RedisCallback<String>() {
             public String doInRedis(RedisConnection connection) throws DataAccessException {
@@ -297,7 +330,8 @@ public class RedisOperation implements ICacheOperation {
             }
         });
 	}
-	
+
+	@Override
 	public <T> T execute(RedisCallback<T> redisCallback) {
 		return redisTemplate.execute(redisCallback);
 	}

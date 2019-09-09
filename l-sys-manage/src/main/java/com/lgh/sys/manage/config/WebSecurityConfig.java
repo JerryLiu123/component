@@ -98,6 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
 		        // 由于使用的是JWT，不需要csrf
 		        .csrf().disable()
+		        .formLogin().disable()
 		        //禁用 logoutFilter 因为用的JWT禁用了session，也没有退出之后需要返回的页面等
 		        .logout().disable()
 		        //禁用requestCache 因为是接口操作，没有什登陆之后需要恢复的请求
@@ -111,7 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对于获取token的rest api要允许匿名访问,
                 //这个匿名访问，也就是不需要拦截的地址 看了一下源码是在 FilterInvocationSecurityMetadataSource 的实现类中如果不拦截的话就代表
                 //所有人都可以访问，，然后就这个方法的实现累 返回个 null 就行了
-                //也就是说登陆是一个方面，但是是否可以访问（授权）和登陆是不一样的
+                //也就是说登陆是一个方面，但是是否可以访问（授权）是另一个方面和登陆是不一样的
                 .authorizeRequests()
                 .antMatchers(strings).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证

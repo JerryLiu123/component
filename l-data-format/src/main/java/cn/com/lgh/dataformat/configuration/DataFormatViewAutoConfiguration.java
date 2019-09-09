@@ -140,19 +140,6 @@ public class DataFormatViewAutoConfiguration implements WebMvcConfigurer {
         	logger.info("初始化 分布式 Callback Service 方法....");
         	return new CallBackServiceImpl();
 		}
-//		try {
-//	    	if(applicationContext.getBean("sessionRepository") == null) {
-//	        	logger.info("初始化 本地 Callback Service 方法....");
-//	        	return new CallBackLocaleServiceImpl();
-//	    	}else {
-//	        	logger.info("初始化 分布式 Callback Service 方法....");
-//	        	return new CallBackServiceImpl();
-//	    	}
-//		} catch (Exception e) {
-//			logger.warn("在上下文中未能获得 Bean sessionRepository");
-//        	logger.info("初始化 本地 Callback Service 方法....");
-//        	return new CallBackLocaleServiceImpl();
-//		}
     }
     
     @Bean
@@ -212,7 +199,7 @@ public class DataFormatViewAutoConfiguration implements WebMvcConfigurer {
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
     	WebMvcConfigurer.super.configureContentNegotiation(configurer);
 	    configurer.favorPathExtension(true)
-			.defaultContentType(MediaType.TEXT_HTML)//默认解析器使用为html
+			.defaultContentType(MediaType.APPLICATION_JSON_UTF8)//默认解析器使用为json
 			.mediaType("excel", MediaType.parseMediaType("application/excel"))//自定义后缀
 			.mediaType("task", MediaType.parseMediaType("application/task"));//自定义后缀
 			

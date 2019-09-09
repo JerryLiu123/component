@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -17,6 +18,7 @@ import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
@@ -102,45 +104,45 @@ public class RedisConfig {
 		this.uri = this.formatUrl(this.uri);
 		logger.info("---redis 类型:"+pattern+"---");
 	    logger.info("---redis 超时时间:"+timeout+"---");
-	    //logger.info("---redis 连接池信息:"+poolConfig+"---");
 	    logger.info("---redis 地址:"+uri+"---");
 	    logger.info("---redis 所用库:"+databaseNumber+"---");
 	    logger.info("---redis 密码:"+password+"---");
-	    
-	    //JedisConnectionFactory factory = null;
+
 	    LettuceConnectionFactory factory = null;
-//	    JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
-//	    jedisClientConfiguration.connectTimeout(Duration.ofMillis((timeout != null && timeout > 0) ? timeout : 60 * 1000));//连接超时
-//	    jedisClientConfiguration.readTimeout(Duration.ofMillis((timeout != null && timeout > 0) ? timeout : 60 * 1000));//读取超时
-	    
 	    LettuceClientConfiguration.LettuceClientConfigurationBuilder lettuceClientConfigurationBuilder = LettuceClientConfiguration.builder();
 	    lettuceClientConfigurationBuilder.commandTimeout(Duration.ofMillis((timeout != null && timeout > 0) ? timeout : 60 * 1000));
 	    
 	    if("sentinel".equals(pattern)) {//哨兵
-	    	//factory = new JedisConnectionFactory(sentinelConfiguration(), jedisClientConfiguration.build());
-	    	factory = new LettuceConnectionFactory(this.sentinelConfiguration(), lettuceClientConfigurationBuilder.build());
+	    	factory = new LettuceConnectionFactory(this.sentinelConfiguration(), getPoolConfig());
 	    }else if("cluster".equals(pattern)) {//集群
-	    	//factory = new JedisConnectionFactory(clusterConfiguration(), jedisClientConfiguration.build());
-	    	factory = new LettuceConnectionFactory(this.clusterConfiguration(), lettuceClientConfigurationBuilder.build());
+	    	factory = new LettuceConnectionFactory(this.clusterConfiguration(), getPoolConfig());
 	    }else if("base".equals(pattern)){//单机
-	        //factory = new JedisConnectionFactory(standaloneConfiguration(), jedisClientConfiguration.build());
-	        factory = new LettuceConnectionFactory(this.standaloneConfiguration(), lettuceClientConfigurationBuilder.build());
+	        factory = new LettuceConnectionFactory(this.standaloneConfiguration(), getPoolConfig());
 	    }
 	    return factory;
 	}
-	
+
+
 	/**
-	 * 连接池配置
+	 * 获取缓存连接池
+	 *
 	 * @return
 	 */
-//   private JedisPoolConfig jedisPoolConfig() {
-//	    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-//	    jedisPoolConfig.setMaxTotal(poolConfig.getOrDefault("maxTotal", 100));
-//	    jedisPoolConfig.setMaxIdle(poolConfig.getOrDefault("maxIdle", 50));
-//	    jedisPoolConfig.setMinIdle(poolConfig.getOrDefault("minIdle", 10));
-//       return jedisPoolConfig;
-//   }
-   
+	@Bean
+	public LettucePoolingClientConfiguration getPoolConfig() {
+		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+		config.setMaxTotal(50);
+		config.setMaxWaitMillis(5000);
+		config.setMaxIdle(3000);
+		config.setMinIdle(1000);
+		LettucePoolingClientConfiguration pool = LettucePoolingClientConfiguration.builder()
+				.poolConfig(config)
+				.commandTimeout(Duration.ofMillis(timeout))
+				.shutdownTimeout(Duration.ofMillis(3000))
+				.build();
+		return pool;
+	}
+	
 	/**
 	 * 配置集群连接属性
 	 * @return
@@ -198,7 +200,7 @@ public class RedisConfig {
 	 */
 	private RedisStandaloneConfiguration standaloneConfiguration() throws Exception {
 		RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-		if(uri.size() != 1) throw new CacheException("redis配置信息错误"); 
+		if(uri.size() != 1) {throw new CacheException("redis配置信息错误");}
 	    for(String s : uri) {
 	    	configuration.setHostName(s.split(":")[0]);
 	    	configuration.setPort(Integer.valueOf(s.split(":")[1]));
