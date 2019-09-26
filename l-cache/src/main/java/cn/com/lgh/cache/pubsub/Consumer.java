@@ -38,6 +38,10 @@ public class Consumer implements MessageListener {
         //System.err.println("收到的mq消息" + deserialize);
         Map<String, Object> data = JSONObject.parseObject(deserialize, new TypeReference<Map>(){});
         try {
+            /*
+            * 这里是源码在CacheContext中的,在__createOrGetCache中在初始化cache后会将 cache 放到SimpleCacheManager中，
+            * 这个 SimpleCacheManager 是ConfigProvider 中获得出来的,现在看到的，，，，
+            */
             Cache cache = configProvider.getCacheManager().getCache(String.valueOf(data.get("area")), String.valueOf(data.get("cacheName")));
             //做本地缓存的清理
             Optional.ofNullable(cache)

@@ -26,6 +26,9 @@ public class LocalSyncCacheMessagePublisher extends AbstractMessagePublisher {
     * @Return: void
     * @Author: lizhiting
     * @Date: 2019-09-26 10:45
+     * 这个是在源码 DefaultCacheMonitorManager 对象的 addCacheUpdateMonitor 方法中调用，如果spring上下文中有 CacheMessagePublisher
+     * 的实现类的话，addCacheUpdateMonitor将会封装一个CacheMonitor（监听）加入到cache的监听链中，这个监听会关注 新增和删除方法，
+     * 这个监听的调用，现在看到的是在 CacheContext 的 buildCache 中添加对于这个cache的监听
     */
     @Override
     public void publish(String area, String cacheName, CacheMessage cacheMessage) {
