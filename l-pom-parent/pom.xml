@@ -41,11 +41,20 @@
 		<com.auth0.version>3.4.0</com.auth0.version>
 		<com.alibaba.fastjson.version>1.2.47</com.alibaba.fastjson.version>
 		<com.baomidou.mybatisplus-boot>3.0.7.1</com.baomidou.mybatisplus-boot>
-	</properties>  
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
  
  
-  <dependencyManagement>
-   <dependencies>
+	<dependencyManagement>
+		<dependencies>
    		
    		<dependency>
    			<groupId>com.alibaba</groupId>
