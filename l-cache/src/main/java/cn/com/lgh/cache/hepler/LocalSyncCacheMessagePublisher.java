@@ -2,17 +2,25 @@ package cn.com.lgh.cache.hepler;
 
 import cn.com.lgh.cache.pubsub.Dispatcher;
 import com.alibaba.fastjson.JSONObject;
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.MultiLevelCache;
+import com.alicp.jetcache.anno.method.CacheHandler;
+import com.alicp.jetcache.anno.support.ConfigProvider;
 import com.alicp.jetcache.support.AbstractMessagePublisher;
 import com.alicp.jetcache.support.CacheMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class LocalSyncCacheMessagePublisher extends AbstractMessagePublisher {
 
     @Autowired
     private Dispatcher dispatcher;
+
+    @Autowired
+    private ConfigProvider configProvider;
 
     /**
     * @Title: publish
@@ -32,17 +40,22 @@ public class LocalSyncCacheMessagePublisher extends AbstractMessagePublisher {
     */
     @Override
     public void publish(String area, String cacheName, CacheMessage cacheMessage) {
-        //发布通知，说明这个缓存有变化
-        Map<String, Object> value = new HashMap<>(3);
-        value.put("area", area);
-        value.put("cacheName", cacheName);
-        value.put("keys", cacheMessage.getKeys());
-        dispatcher.send(JSONObject.toJSONString(value));
-//        for(Object o : cacheMessage.getKeys()){
-//
-//            dispatcher.send(cacheName+"."+o);
-//        }
+        try {
+            Cache cache = configProvider.getCacheManager().getCache(area, cacheName);
+            Optional.ofNullable(cache)
+                    .filter(obj -> obj instanceof CacheHandler.CacheHandlerRefreshCache)
+                    .map(obj -> ((CacheHandler.CacheHandlerRefreshCache) obj).getTargetCache())
+                    .filter(obj -> obj instanceof MultiLevelCache)
+                    .ifPresent(obj -> {
+                        //发布通知，说明这个缓存有变化
+                        Map<String, Object> value = new HashMap<>(3);
+                        value.put("area", area);
+                        value.put("cacheName", cacheName);
+                        value.put("keys", cacheMessage.getKeys());
+                        dispatcher.send(JSONObject.toJSONString(value));
+                    });
+        }catch (IllegalArgumentException e){
 
-//        System.err.println("area:"+area+"cacheName:"+cacheName+"--------------");
+        }
     }
 }
