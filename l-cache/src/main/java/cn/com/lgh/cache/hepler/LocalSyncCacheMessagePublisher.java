@@ -1,5 +1,6 @@
 package cn.com.lgh.cache.hepler;
 
+import cn.com.lgh.cache.pubsub.Consumer;
 import cn.com.lgh.cache.pubsub.Dispatcher;
 import com.alibaba.fastjson.JSONObject;
 import com.alicp.jetcache.Cache;
@@ -53,6 +54,7 @@ public class LocalSyncCacheMessagePublisher extends AbstractMessagePublisher {
                         value.put("cacheName", cacheName);
                         value.put("keys", cacheMessage.getKeys());
                         dispatcher.send(JSONObject.toJSONString(value));
+                        Consumer.isUpdate.set(false);
                     });
         }catch (IllegalArgumentException e){
 

@@ -17,6 +17,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
 * @Description: redis 队列监听
@@ -24,6 +25,8 @@ import java.util.Optional;
 * @Date: 2019-09-26 11:12
 */
 public class Consumer implements MessageListener {
+
+    public static AtomicBoolean isUpdate = new AtomicBoolean(true);
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -35,7 +38,10 @@ public class Consumer implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         RedisSerializer<String> valueSerializer = redisTemplate.getStringSerializer();
         String deserialize = valueSerializer.deserialize(message.getBody());
-        //System.err.println("收到的mq消息" + deserialize);
+        if(!isUpdate.get()){
+            isUpdate.set(true);
+            return;
+        }
         Map<String, Object> data = JSONObject.parseObject(deserialize, new TypeReference<Map>(){});
         try {
             /*
@@ -54,6 +60,7 @@ public class Consumer implements MessageListener {
                             if(c instanceof AbstractEmbeddedCache){
                                 JSONArray keys = (JSONArray) data.get("keys");
                                 for(Object key : keys){
+                                    System.err.println("清空一级缓存数据:"+key);
                                     ((AbstractEmbeddedCache) c).remove(key);
                                 }
                             }
