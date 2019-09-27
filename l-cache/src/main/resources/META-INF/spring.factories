@@ -1,2 +1,4 @@
 #配置自定义Starter的自动化配置
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.com.lgh.cache.config.CacheAutoConfig
+#配置启动监听
+org.springframework.context.ApplicationListener=cn.com.lgh.cache.RedisHealthCheckTask

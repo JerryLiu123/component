@@ -1,5 +1,6 @@
 package cn.com.lgh.cache.pubsub;
 
+import cn.com.lgh.cache.RedisHealthCheckTask;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -36,12 +37,17 @@ public class Consumer implements MessageListener {
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        RedisSerializer<String> valueSerializer = redisTemplate.getStringSerializer();
-        String deserialize = valueSerializer.deserialize(message.getBody());
         if(!isUpdate.get()){
             isUpdate.set(true);
             return;
         }
+        /*这里还有队列消费步完成，短线重连等等问题没有解决*/
+        RedisSerializer<String> valueSerializer = redisTemplate.getStringSerializer();
+        String deserialize = valueSerializer.deserialize(message.getBody());
+        if(deserialize == null || RedisHealthCheckTask.CHECK_MESSAGE.equals(deserialize)){
+            return;
+        }
+
         Map<String, Object> data = JSONObject.parseObject(deserialize, new TypeReference<Map>(){});
         try {
             /*
