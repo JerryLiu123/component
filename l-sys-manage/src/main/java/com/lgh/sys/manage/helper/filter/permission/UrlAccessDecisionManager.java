@@ -13,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.security.PermitAll;
+
 /**
  * 
  * @ClassName: UrlAccessDecisionManager
@@ -32,17 +34,19 @@ public class UrlAccessDecisionManager implements AccessDecisionManager {
 	@Override
 	public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
 			throws AccessDeniedException, InsufficientAuthenticationException {
-        if (authentication instanceof AnonymousAuthenticationToken) {//代表没有登陆
-            throw new BadCredentialsException("未登陆或登陆过期");
-        }
+
+        //authorities:当前用户所有的角色列表
+		//configAttributes：这个地址允许的角色列表
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		for(ConfigAttribute o : configAttributes) {
-			 for(GrantedAuthority r : authorities) {
-				 //String url = o.getAttribute();
-				 if(o.getAttribute().equals(r.getAuthority())) {
-					 return;
-				 }
-			 }
+			if("permitAll".equals(o.toString())){
+				return;
+			}
+			for(GrantedAuthority r : authorities) {
+				if(o.getAttribute()!=null && o.getAttribute().equals(r.getAuthority())) {
+					return;
+				}
+			}
 		}
 		
 		throw new AccessDeniedException("您没有权限访问该地址");

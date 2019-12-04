@@ -1,9 +1,6 @@
 package com.lgh.sys.manage.server.impl;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 
@@ -31,8 +28,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
 	
 	@Autowired
 	private RoleServer roleServer;
-	
-	
+
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		LOG.debug("-----获得用户名为:{}-----", username);

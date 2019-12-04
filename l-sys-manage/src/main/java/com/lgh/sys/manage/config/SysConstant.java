@@ -35,7 +35,7 @@ public class SysConstant {
 	private Boolean only;
 	
 	/**不需要拦截的方法**/
-	@Value("#{'${jwt.intercept.matcher:/api/v1/login, /api/v1/logout, /api/v1/sign, /error/**, /test/login}'.split(',')}")
+	@Value("#{'${jwt.intercept.matcher:/api/v1/login, /api/v1/logout, /api/v1/sign, /error/**, /test/login, /test/hello}'.split(',')}")
 	private List<String> matcher;
 	
 	/**不需要拦截的web资源**/

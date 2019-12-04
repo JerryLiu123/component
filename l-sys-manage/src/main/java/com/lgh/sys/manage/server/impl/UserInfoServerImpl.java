@@ -43,7 +43,7 @@ public class UserInfoServerImpl implements UserInfoServer {
 		
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public boolean lockUser(String userID) {
         String sqlUp = "UPDATE sys_login_info SET state = '2' WHERE `id` = :id";

@@ -1,5 +1,7 @@
 package com.lgh.sys.manage.config;
 
+import com.lgh.sys.manage.helper.filter.permission.UrlFilterInvocationSecurityMetadataSource;
+import com.lgh.sys.manage.server.RoleServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -34,6 +37,8 @@ import com.lgh.sys.manage.helper.filter.permission.UrlAccessDecisionManager;
 import com.lgh.sys.manage.server.impl.AuthServiceImpl;
 import com.lgh.sys.manage.server.impl.UserDetailServiceImpl;
 import com.lgh.sys.manage.util.JwtUtils;
+
+import java.util.Collection;
 
 /**
  * 
@@ -79,9 +84,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
-	private FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
+	private RoleServer roleServer;
 	
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -123,7 +128,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					@Override
 					public <O extends FilterSecurityInterceptor> O postProcess(O object) {
 						object.setAccessDecisionManager(urlAccessDecisionManager);
-						object.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
+						object.setSecurityMetadataSource(new UrlFilterInvocationSecurityMetadataSource(roleServer,
+								object.getSecurityMetadataSource()));
 						return object;
 					}
 				});

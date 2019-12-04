@@ -6,10 +6,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
 import com.lgh.sys.manage.helper.MD5PasswordEncoder;
-import com.lgh.sys.manage.helper.filter.permission.UrlFilterInvocationSecurityMetadataSource;
 import com.lgh.sys.manage.server.RoleServer;
 import com.lgh.sys.manage.server.TokenOperation;
 import com.lgh.sys.manage.server.UserInfoServer;
@@ -121,23 +119,5 @@ public class BeanConfig {
     		log.debug("/-----初始化默认的 密码错误处理 -----/");
     	}
     	return new InMemoryWrongPasswordPostImpl();
-    }
-    
-    //这个会影响性能
-    /**
-     * 
-     * @Title: filterInvocationSecurityMetadataSource
-     * @Description: 初始化 获得地址-角色，对应关系方法
-     * @Author lizhiting
-     * @DateTime May 29, 2019 1:50:33 PM
-     * @return
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public FilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource() {
-    	if(log.isDebugEnabled()) {
-    		log.debug("/-----初始化默认的 获得地址-角色对应关系方法 -----/");
-    	}
-    	return new UrlFilterInvocationSecurityMetadataSource();
     }
 }
